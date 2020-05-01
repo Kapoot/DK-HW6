@@ -19,7 +19,7 @@ using namespace std;
 
 
 
-void binAssign(CDKMATRIX* myMatrix,BinaryFileHeader* fHeader,ifstream& binFile)
+void binAssign(CDKMATRIX* myMatrix,BinaryFileHeader* fHeader,BinaryFileRecord* fRecord,ifstream& binFile)
 {
 
   stringstream ss1;
@@ -41,6 +41,28 @@ void binAssign(CDKMATRIX* myMatrix,BinaryFileHeader* fHeader,ifstream& binFile)
   setCDKMatrixCell (myMatrix, 1, 2, ("Version: " +s2).c_str ());
   setCDKMatrixCell (myMatrix, 1, 3, ("NumRecords: " + s3).c_str ());
   drawCDKMatrix (myMatrix, true);
+
+int i = 2;
+   
+  while (binFile.read ((char *) fRecord, sizeof (BinaryFileRecord))
+	 && i <= 5)
+    {
+      stringstream ss;
+      string s; 
+      ss1.str("");
+      s1= "";        
+      
+      ss << (int)fRecord->strLength;
+      s += ss.str ();
+      
+      ss1 << fRecord->stringBuffer;
+      s1 += ss1.str ();
+
+
+      setCDKMatrixCell (myMatrix, i, 1, ("strlen: " + s).c_str ());
+      setCDKMatrixCell (myMatrix, i, 2, s1.c_str ());
+      i++;
+    }
 
 }
 
