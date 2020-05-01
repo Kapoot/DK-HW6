@@ -1,22 +1,31 @@
 /*
- * Usage of CDK Matrix
- *
- * File:   example1.cc
- * Author: Stephen Perkins
- * Email:  stephen.perkins@utdallas.edu
- */
+ * Filename:       example1.cc
+ * Date:           04/28/2020
+ * Author:         Dylan Kapustka
+ * Email:          dlk190000@utdallas.edu
+ * Version:        1.0
+ * Copyright:      2020, All Rights Reserved
+ * 
+ * 
+ * Description:   source file with matrix dimensions
+ * 
+ */ 
 
 #include <iostream>
 #include "cdk.h"
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <stdint.h>
+#include "binary.h"
 
 
-#define MATRIX_WIDTH 3
+#define MATRIX_WIDTH 5
 #define MATRIX_HEIGHT 3
-#define BOX_WIDTH 15
-#define MATRIX_NAME_STRING "Test Matrix"
+#define BOX_WIDTH 25
+#define MATRIX_NAME_STRING "Binary File Contents"
 
 using namespace std;
-
 
 int main()
 {
@@ -25,25 +34,21 @@ int main()
   CDKSCREEN	*cdkscreen;
   CDKMATRIX     *myMatrix;           // CDK Screen Matrix
 
-  const char 		*rowTitles[MATRIX_HEIGHT+1] = {"R0", "R1", "R2", "R3"};
-  const char 		*columnTitles[MATRIX_WIDTH+1] = {"C0", "C1", "C2", "C3"};
-  int		boxWidths[MATRIX_WIDTH+1] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
-  int		boxTypes[MATRIX_WIDTH+1] = {vMIXED, vMIXED, vMIXED, vMIXED};
+  BinaryFileHeader* fHeader = new BinaryFileHeader ();
+  
 
-  /*
-   * Initialize the Cdk screen.
-   *
-   * Make sure the putty terminal is large enough
-   */
+  const char 	*rowTitles[MATRIX_HEIGHT+1] = {"R0", "a", "b", "c"};
+  const char 	*columnTitles[MATRIX_WIDTH+1] = {"C0", "a", "b", "c","d","e"};
+  int		boxWidths[MATRIX_WIDTH+1] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
+  int		boxTypes[MATRIX_WIDTH+1] = {vMIXED, vMIXED, vMIXED, vMIXED, vMIXED, vMIXED};
+
+ 
   window = initscr();
   cdkscreen = initCDKScreen(window);
 
-  /* Start CDK Colors */
   initCDKColor();
 
-  /*
-   * Create the matrix.  Need to manually cast (const char**) to (char **)
-  */
+ 
   myMatrix = newCDKMatrix(cdkscreen, CENTER, CENTER, MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_WIDTH, MATRIX_HEIGHT,
 			  MATRIX_NAME_STRING, (char **) columnTitles, (char **) rowTitles, boxWidths,
 				     boxTypes, 1, 1, ' ', ROW, true, true, false);
@@ -54,19 +59,27 @@ int main()
       _exit(1);
     }
 
-  /* Display the Matrix */
+  
   drawCDKMatrix(myMatrix, true);
 
-  /*
-   * Dipslay a message
-   */
-  setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
-  drawCDKMatrix(myMatrix, true);    /* required  */
 
-  /* so we can see results */
-  sleep (10);
+ ifstream binFile("/scratch/perkins/cs3377.bin", ios::in | ios::binary);
+ if (binFile.is_open())
+{
+
+ binFile.read ((char *) fHeader, sizeof (BinaryFileHeader));
+   
+  binAssign(myMatrix,fHeader,binFile);
+
+  drawCDKMatrix (myMatrix, true);
+
+  unsigned char x;
+  cin >> x;
+  binFile.close ();
+  endCDK ();
 
 
-  // Cleanup screen
-  endCDK();
+
+}
+
 }
