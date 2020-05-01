@@ -37,7 +37,7 @@ public:
  char stringBuffer[maxRecordStringLength];
 };
 
-void binAssign(CDKMATRIX*,BinaryFileHeader*,std::ifstream&);
+void binAssign(CDKMATRIX*,BinaryFileHeader*,BinaryFileRecord*,std::ifstream&);
 
 #endif
 

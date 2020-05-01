@@ -35,10 +35,10 @@ int main()
   CDKMATRIX     *myMatrix;           // CDK Screen Matrix
 
   BinaryFileHeader* fHeader = new BinaryFileHeader ();
-  
+  BinaryFileRecord* fRecord = new BinaryFileRecord ();
 
-  const char 	*rowTitles[MATRIX_HEIGHT+1] = {"R0", "a", "b", "c"};
-  const char 	*columnTitles[MATRIX_WIDTH+1] = {"C0", "a", "b", "c","d","e"};
+  const char 		*rowTitles[MATRIX_HEIGHT+1] = {"R0", "a", "b", "c"};
+  const char 		*columnTitles[MATRIX_WIDTH+1] = {"C0", "a", "b", "c","d","e"};
   int		boxWidths[MATRIX_WIDTH+1] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
   int		boxTypes[MATRIX_WIDTH+1] = {vMIXED, vMIXED, vMIXED, vMIXED, vMIXED, vMIXED};
 
@@ -69,7 +69,7 @@ int main()
 
  binFile.read ((char *) fHeader, sizeof (BinaryFileHeader));
    
-  binAssign(myMatrix,fHeader,binFile);
+  binAssign(myMatrix,fHeader,fRecord,binFile);
 
   drawCDKMatrix (myMatrix, true);
 
